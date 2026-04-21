@@ -6,7 +6,7 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/../../../부트캠프/GitHub/lxp_brn" />
           </set>
         </option>
         <option name="myGradleHome" value="" />
