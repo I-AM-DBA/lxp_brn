@@ -15,6 +15,15 @@ public class CourseDTO {
         this.courseDescription = courseDescription;
     }
 
+    public CourseDTO(Long courseId, String courseTitle, String courseDescription, boolean isPublic,
+            boolean isDeleted) {
+        this.courseId = courseId;
+        this.courseTitle = courseTitle;
+        this.courseDescription = courseDescription;
+        this.isPublic = isPublic;
+        this.isDeleted = isDeleted;
+    }
+
     public Long getCourseId() {
         return courseId;
     }
