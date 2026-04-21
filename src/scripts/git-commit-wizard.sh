@@ -19,16 +19,30 @@ _restore_cursor() { printf '\033[u';    }
 trap '_show_cursor' EXIT
 
 # ── 키 입력 읽기 ──────────────────────────────────────────────
-KEY=""
 read_key() {
     KEY=""
-    local c
-    IFS= read -rsn1 KEY
-    if [[ $KEY == $'\x1b' ]]; then
-        while IFS= read -rsn1 -t 0.1 c; do
-            KEY+="$c"
-            [[ $c =~ [a-zA-Z~] ]] && break
-        done
+    local temp_key rest
+
+    # Zsh인지 Bash인지 확인하여 첫 글자 읽기
+    if [[ -n "$ZSH_VERSION" ]]; then
+        read -k 1 -rs temp_key
+    else
+        read -rn 1 -rs temp_key
+    fi
+
+    KEY="$temp_key"
+
+    # 만약 ESC 키($'\e')가 들어왔다면 (화살표 키 시작 신호)
+    if [[ "$temp_key" == $'\e' ]]; then
+        # 소수점 타임아웃 에러를 피하기 위해 1초로 설정하되,
+        # 실제로는 데이터가 바로 들어오므로 렉이 거의 없습니다.
+        if [[ -n "$ZSH_VERSION" ]]; then
+            read -k 2 -t 0.1 -rs rest
+        else
+            # 구식 Bash를 위해 -t 옵션을 정수 1로 쓰거나 아예 짧게 줌
+            read -rn 2 -t 1 -rs rest
+        fi
+        KEY+="$rest"
     fi
 }
 
@@ -80,22 +94,26 @@ select_type() {
 
     _hide_cursor
     printf "${BOLD}${CYN}?${RST} ${BOLD}커밋 타입 선택${RST}  ${GRY}(up/down 이동, Enter 선택, Ctrl+C 취소)${RST}\n"
-    _save_cursor
+
+    # ─── 이 부분을 수정 ───
     render_types $idx
 
     while true; do
         read_key
         case "$KEY" in
-            $'\x1b[A') idx=$(( (idx - 1 + total) % total )) ;;
-            $'\x1b[B') idx=$(( (idx + 1) % total )) ;;
+            $'\x1b[A'|$'\e[A') idx=$(( (idx - 1 + total) % total )) ;;
+            $'\x1b[B'|$'\e[B') idx=$(( (idx + 1) % total )) ;;
             '')         break ;;
             $'\x03')    _show_cursor; printf '\n'; exit 0 ;;
         esac
-        _restore_cursor
+
+        # 커서를 메뉴 줄 수만큼 위로 올림 (TYPES가 8개이므로 8줄 위로)
+        printf "\033[%dA" "$total"
         render_types $idx
     done
+    # ──────────────────────
 
-    _restore_cursor
+    _restore_cursor # (이건 이제 필요 없지만 둬도 무방합니다)
     printf '\033[J'
     printf "${CYN}${BOLD}✔${RST} ${BOLD}타입${RST}  ${GRN}${BOLD}${ICONS[$idx]} ${TYPES[$idx]}${RST}\n"
     COMMIT_TYPE="${TYPES[$idx]}"
@@ -109,23 +127,28 @@ confirm_commit() {
 
     _hide_cursor
     printf "${BOLD}${CYN}?${RST} ${BOLD}이대로 커밋할까요?${RST}  ${GRY}(up/down, Enter)${RST}\n"
-    _save_cursor
+
+    # 처음 한 번 메뉴를 그립니다.
     render_items $idx "${opts[@]}"
 
     while true; do
         read_key
         case "$KEY" in
-            $'\x1b[A') idx=$(( (idx - 1 + total) % total )) ;;
-            $'\x1b[B') idx=$(( (idx + 1) % total )) ;;
+            $'\x1b[A'|$'\e[A') idx=$(( (idx - 1 + total) % total )) ;;
+            $'\x1b[B'|$'\e[B') idx=$(( (idx + 1) % total )) ;;
             '')         break ;;
             $'\x03')    _show_cursor; printf '\n'; exit 0 ;;
         esac
-        _restore_cursor
+
+        # 핵심: 출력했던 옵션 개수(2줄)만큼 커서를 위로 올립니다.
+        printf "\033[%dA" "$total"
+        # 그리고 그 자리에 다시 그립니다.
         render_items $idx "${opts[@]}"
     done
 
-    _restore_cursor
-    printf '\033[J'
+    # 선택이 완료되면 출력했던 메뉴를 지우고 깔끔하게 결과를 보여줍니다.
+    printf "\033[%dA\033[J" "$total"
+
     if [ "$idx" -eq 0 ]; then
         CONFIRM_RESULT="yes"
         printf "${CYN}${BOLD}✔${RST} ${GRN}커밋 진행${RST}\n"
@@ -144,12 +167,15 @@ prompt_input() {
 
     _show_cursor
     while true; do
+        # %s 대신 %b를 사용하여 ANSI 색상 코드가 동작하도록 수정
         if [ -n "$is_required" ]; then
-            printf "${BOLD}${CYN}?${RST} ${BOLD}%s${RST} ${RED}(필수)${RST} " "$question"
+            printf "${BOLD}${CYN}?${RST} ${BOLD}%b${RST} ${RED}(필수)${RST} " "$question"
         else
-            printf "${BOLD}${CYN}?${RST} ${BOLD}%s${RST} ${GRY}(Enter로 건너뜀)${RST} " "$question"
+            printf "${BOLD}${CYN}?${RST} ${BOLD}%b${RST} ${GRY}(Enter로 건너뜀)${RST} " "$question"
         fi
+
         IFS= read -r val
+
         if [ -n "$is_required" ] && [ -z "$val" ]; then
             printf "  ${RED}X 값을 입력해주세요.${RST}\n"
             continue
