@@ -1,22 +1,18 @@
-package com.lxp.model;
+package com.lxp.model.courses;
 
-public class Course {
+public class CourseDTO {
     private Long courseId;
     private String courseTitle;
     private String courseDescription;
     private boolean isPublic;
     private boolean isDeleted;
 
-    public Course() {
+    public CourseDTO() {
     }
 
-    public Course(Long courseId, String courseTitle, String courseDescription, boolean isPublic,
-            boolean isDeleted) {
-        this.courseId = courseId;
+    public CourseDTO(String courseTitle, String courseDescription) {
         this.courseTitle = courseTitle;
         this.courseDescription = courseDescription;
-        this.isPublic = isPublic;
-        this.isDeleted = isDeleted;
     }
 
     public Long getCourseId() {
@@ -43,26 +39,18 @@ public class Course {
         this.courseDescription = courseDescription;
     }
 
-    public boolean isPublic() {
+    public boolean isCoursePublic() {
         return isPublic;
     }
 
-    public void setPublic(boolean aPublic) {
-        isPublic = aPublic;
-    }
-
-    public boolean isDeleted() {
+    public boolean isCourseDeleted() {
         return isDeleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
     }
 
     @Override
     public String toString() {
-        return "Course{" + "courseId=" + courseId + ", courseTitle='" + courseTitle + '\''
-                + ", courseDescription='" + courseDescription + '\'' + ", isPublic=" + isPublic
-                + ", isDeleted=" + isDeleted + '}';
+        return "CourseDTO{" + "courseTitle='" + courseTitle + '\'' + ", courseDescription='"
+                + courseDescription + '\'' + '}';
     }
 }
+

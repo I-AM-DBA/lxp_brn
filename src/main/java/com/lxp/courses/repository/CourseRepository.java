@@ -1,6 +1,6 @@
 package com.lxp.courses.repository;
 
-import com.lxp.model.Course;
+import com.lxp.model.courses.Course;
 import com.lxp.utils.QueryUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
