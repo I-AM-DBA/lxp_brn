@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Properties>
+  <query key="get.allCourses">
+    SELECT course_title, course_description, is_public, created_at FROM courses
+  </query>
+
+  <query key="get.course">
+    SELECT course_title, course_description, is_public, created_at FROM courses
+    WHERE course_id = ?
+  </query>
+
+  <query key="create.course">
+    INSERT INTO courses (course_title, course_description)
+    VALUES (?, ?)
+  </query>
+
+  <query key="update.course">
+    UPDATE courses
+    SET course_title = ? , course_description = ?
+    WHERE course_id = ?
+  </query>
+
+  <query key="delete.course">
+    UPDATE courses
+    SET is_deleted = true, deleted_at = CURRENT_TIMESTAMP
+    WHERE course_id = ?
+  </query>
+</Properties>
