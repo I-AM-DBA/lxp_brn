@@ -185,6 +185,33 @@ prompt_input() {
     printf -v "$varname" '%s' "$val"
 }
 
+# ── 여러 줄 입력(빈 줄 Enter로 완료) ──────────────────────────────────────────────────────
+prompt_multiline() {
+  local varname=$1
+  local question=$2
+  local lines=()
+  local lines
+
+  _show_cursor
+  printf "${BOLD}${CYN}?${RST} ${BOLD}%b${RST} ${GRY}(빈 줄 Enter로 입력 완료, 건너뜀도 가능)${RST}\n" "$question"
+
+  while true; do
+    printf "${GRY}> ${RST}"
+    IFS= read -r line
+    #빈 줄이면 입력 종료
+    [[ -z "$line" ]] && break
+    lines+=("$line")
+    done
+
+    #배열을 줄바꿈(\n)으로 합쳐서 변수에 저장
+    local result
+    printf -v result '%s\n' "${lines[0]}"
+    # 마지막 \n 제거
+    result="${result%$'\n'}"
+
+    printf -v "$varname" '%s' "$result"
+}
+
 # ── MAIN ──────────────────────────────────────────────────────
 main() {
     if ! git rev-parse --git-dir > /dev/null 2>&1; then
@@ -202,7 +229,8 @@ main() {
     [ -n "$COMMIT_SCOPE" ] && scope_part="(${COMMIT_SCOPE})"
     prompt_input COMMIT_TITLE "제목  ${GRY}[${COMMIT_TYPE}${scope_part}: ...]${RST}" required
 
-    prompt_input COMMIT_DESC "상세 설명"
+    # prompt_input COMMIT_DESC "상세 설명"
+    prompt_multiline COMMIT_DESC "상세 설명"
 
     local headline="${COMMIT_TYPE}${scope_part}: ${COMMIT_TITLE}"
     local full_msg="$headline"
