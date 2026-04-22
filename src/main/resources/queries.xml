@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Properties>
   <query key="get.allCourses">
-    SELECT course_title, course_description, is_public, created_at FROM courses
+    SELECT course_title, course_description, is_public, created_at FROM courses c
+    JOIN sections s on s.course_id = c.course_id
+    JOIN contents con on con.section_id = s.section_id;
   </query>
 
   <query key="get.course">
@@ -25,32 +27,57 @@
     SET is_deleted = true, deleted_at = CURRENT_TIMESTAMP, is_public = false
     WHERE course_id = ?
   </query>
-</Properties>
 
-<Properties>
-<query key="get.allSections">
-  SELECT section_id, course_id, section_title, is_public, is_deleted, created_at FROM sections
-</query>
+  <query key="get.allSections">
+    SELECT section_id, course_id, section_title, is_public, is_deleted, created_at FROM sections s
+    JOIN contents c on c.section_id = s.section_id
+  </query>
 
-<query key="get.section">
-  SELECT section_id, course_id, section_title, is_public, is_deleted
-  WHERE section_id = ?
-</query>
+  <query key="get.section">
+    SELECT section_id, course_id, section_title, is_public, is_deleted FROM sections
+    WHERE section_id = ?
+  </query>
 
-<query key="create.section">
-  INSERT INTO sections (course_id, section_title)
-  VALUES (?, ?)
-</query>
+  <query key="create.section">
+    INSERT INTO sections (course_id, section_title)
+    VALUES (?, ?)
+  </query>
 
-<query key="update.section">
-  UPDATE sections
-  SET section_title = ?
-  WHERE section_id = ?
-</query>
+  <query key="update.section">
+    UPDATE sections
+    SET section_title = ?
+    WHERE section_id = ?
+  </query>
 
-<query key="delete.section">
-  UPDATE sections
-  SET is_deleted = true, deleted_at = CURRENT_TIMESTAMP, is_public = false
-  WHERE section_id = ?
-</query>
+  <query key="delete.section">
+    UPDATE sections
+    SET is_deleted = true, deleted_at = CURRENT_TIMESTAMP, is_public = false
+    WHERE section_id = ?
+  </query>
+
+  <query key="get.allContent">
+    SELECT section_id, course_id, section_title, is_public, is_deleted, created_at FROM sections
+  </query>
+
+  <query key="get.content">
+    SELECT content_id, section_id, content_title, content_url, time, is_public, is_delete, crated_at, updated_at, deleted_at
+    WHERE content_id = ?
+  </query>
+
+  <query key="create.content">
+    INSERT INTO contents (section_id, content_title, content_url, time)
+    VALUES (?, ?, ?, ?)
+  </query>
+
+  <query key="update.content">
+    UPDATE contents
+    SET content_title = ?, content_url = ?, time = ?, is_public = ?, is_deleted = ?
+    WHERE content_id = ?
+  </query>
+
+  <query key="delete.content">
+    UPDATE contents
+    SET is_deleted = true, deleted_at = CURRENT_TIMESTAMP, is_public = false
+    WHERE content_id = ?
+  </query>
 </Properties>

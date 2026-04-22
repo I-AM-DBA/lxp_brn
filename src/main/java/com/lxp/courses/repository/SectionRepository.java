@@ -1,6 +1,7 @@
 package com.lxp.courses.repository;
 
-import com.lxp.model.sections.Section;
+import com.lxp.model.DTO.SectionInsertDTO;
+import com.lxp.model.courses.Course;
 import com.lxp.utils.QueryUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,17 +19,18 @@ public class SectionRepository {
     }
 
     // 모든 Section 조회
-    public List<Section> getAllSections() {
+    public List<Course.Section> getAllSections() {
         String sql = QueryUtils.getQuery("get.allSections");
-        List<Section> sections = new ArrayList<>();
+        List<Course.Section> sections = new ArrayList<>();
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                Section section = new Section(rs.getLong("section_id"), rs.getLong("course_id"),
-                        rs.getString("section_title"), rs.getBoolean("is_public"),
-                        rs.getBoolean("is_deleted"));
+                Course.Section section =
+                        new Course.Section(rs.getLong("section_id"), rs.getLong("course_id"),
+                                rs.getString("section_title"), rs.getBoolean("is_public"),
+                                rs.getBoolean("is_deleted"));
                 sections.add(section);
             }
         } catch (SQLException e) {
@@ -38,7 +40,7 @@ public class SectionRepository {
     }
 
     // 단일 조회
-    public Section getSection(Long courseId) {
+    public Course.Section getSection(Long courseId) {
         String sql = QueryUtils.getQuery("get.course");
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -46,7 +48,7 @@ public class SectionRepository {
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return new Section(rs.getLong("section_id"), rs.getLong("course_id"),
+                    return new Course.Section(rs.getLong("section_id"), rs.getLong("course_id"),
                             rs.getString("section_title"), rs.getBoolean("is_public"),
                             rs.getBoolean("is_deleted"));
                 }
@@ -57,13 +59,13 @@ public class SectionRepository {
         return null;
     }
 
-    public Long createSection(Section section) {
-        String sql = QueryUtils.getQuery("create.course");
+    public Long createSection(SectionInsertDTO sectionInsert) {
+        String sql = QueryUtils.getQuery("create.section");
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql,
                 Statement.RETURN_GENERATED_KEYS)) {
-            pstmt.setLong(1, section.getCourseId());
-            pstmt.setString(2, section.getSectionTitle());
+            pstmt.setLong(1, sectionInsert.getCourseId());
+            pstmt.setString(2, sectionInsert.getSectionTitle());
 
             int affectedRows = pstmt.executeUpdate();
 
@@ -80,8 +82,8 @@ public class SectionRepository {
         return null;
     }
 
-    public Long updateSection(Section section) {
-        String sql = QueryUtils.getQuery("update.course");
+    public Long updateSection(Course.Section section) {
+        String sql = QueryUtils.getQuery("update.section");
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setLong(1, section.getSectionId());
@@ -101,7 +103,7 @@ public class SectionRepository {
     }
 
     public Boolean deleteSection(long sectionId) {
-        String sql = QueryUtils.getQuery("delete.course");
+        String sql = QueryUtils.getQuery("delete.section");
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setLong(1, sectionId);
