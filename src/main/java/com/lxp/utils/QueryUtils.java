@@ -9,7 +9,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -20,10 +19,14 @@ public class QueryUtils {
         loadQueries();
     }
 
+    public static String getQuery(String key) {
+        return queries.get(key);
+    }
+
     private static void loadQueries() {
         try {
             InputStream is = QueryUtils.class.getClassLoader().getResourceAsStream("queries.xml");
-            if(is == null) {
+            if (is == null) {
                 throw new RuntimeException("queries.xml not found");
             }
 
@@ -48,9 +51,5 @@ public class QueryUtils {
         } catch (SAXException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static String getQuery(String key) {
-        return queries.get(key);
     }
 }
