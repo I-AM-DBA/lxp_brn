@@ -26,3 +26,31 @@
     WHERE course_id = ?
   </query>
 </Properties>
+
+<Properties>
+<query key="get.allSections">
+  SELECT section_id, course_id, section_title, is_public, is_deleted, created_at FROM sections
+</query>
+
+<query key="get.section">
+  SELECT section_id, course_id, section_title, is_public, is_deleted
+  WHERE section_id = ?
+</query>
+
+<query key="create.section">
+  INSERT INTO sections (course_id, section_title)
+  VALUES (?, ?)
+</query>
+
+<query key="update.section">
+  UPDATE sections
+  SET section_title = ?
+  WHERE section_id = ?
+</query>
+
+<query key="delete.section">
+  UPDATE sections
+  SET is_deleted = true, deleted_at = CURRENT_TIMESTAMP, is_public = false
+  WHERE section_id = ?
+</query>
+</Properties>
