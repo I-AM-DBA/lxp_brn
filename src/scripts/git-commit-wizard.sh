@@ -190,7 +190,7 @@ prompt_multiline() {
   local varname=$1
   local question=$2
   local lines=()
-  local lines
+  local line
 
   _show_cursor
   printf "${BOLD}${CYN}?${RST} ${BOLD}%b${RST} ${GRY}(빈 줄 Enter로 입력 완료, 건너뜀도 가능)${RST}\n" "$question"
@@ -205,7 +205,7 @@ prompt_multiline() {
 
     #배열을 줄바꿈(\n)으로 합쳐서 변수에 저장
     local result
-    printf -v result '%s\n' "${lines[0]}"
+    printf -v result '%s\n' "${lines[@]}"
     # 마지막 \n 제거
     result="${result%$'\n'}"
 
