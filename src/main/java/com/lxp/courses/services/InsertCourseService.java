@@ -5,17 +5,16 @@ import com.lxp.courses.repository.ContentRepository;
 import com.lxp.courses.repository.CourseRepository;
 import com.lxp.courses.repository.SectionRepository;
 import com.lxp.model.CreateCourseRequest;
-import com.lxp.model.DTO.ContentInsertDTO;
-import com.lxp.model.DTO.CourseInsertDTO;
-import com.lxp.model.DTO.SectionInsertDTO;
-import com.lxp.model.courses.Course;
+import com.lxp.model.dao.Content;
+import com.lxp.model.dao.Course;
+import com.lxp.model.dao.Section;
+import com.lxp.model.dto.ContentInsertDTO;
+import com.lxp.model.dto.CourseInsertDTO;
+import com.lxp.model.dto.SectionInsertDTO;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public class InsertCourseService {
     private final CourseRepository courseRepository;
@@ -34,52 +33,65 @@ public class InsertCourseService {
         }
     }
 
-    public Map<String, Object> insertCourse(CreateCourseRequest request) {
-        Map<String, Object> result = new HashMap<>();
+    public CreateCourseRequest insertCourse(CreateCourseRequest request) {
+        CreateCourseRequest result;
 
         try {
-            CourseInsertDTO courseDTO = request.getCourse();
-            Course course = new Course();
-            course.setCourseTitle(courseDTO.getCourseTitle());
-            course.setCourseDescription(courseDTO.getCourseDescription());
-
+            CourseInsertDTO courseDto = request.getCourse();
+            Course course = courseDto.toCourse();
             Long courseId = courseRepository.createCourse(course);
 
             if (courseId == null) {
                 throw new SQLException("Failed to create Course");
             }
 
-            result.put("courseId", courseId);
-
-            List<Map<String, Object>> sectionList = new ArrayList<>();
+            List<SectionInsertDTO> sectionList = new ArrayList<>();
             for (SectionInsertDTO sectionDTO : request.getSections()) {
                 sectionDTO.setCourseId(courseId);
-                Long sectionId = sectionRepository.createSection(sectionDTO);
 
-                Map<String, Object> sectionMap = new LinkedHashMap<>();
-                sectionMap.put("sectionId", sectionId);
-                sectionMap.put("sectionTitle", sectionDTO.getSectionTitle());
+                SectionInsertDTO sectionObj = createSection(sectionDTO);
 
-                List<Map<String, Object>> contentList = new ArrayList<>();
-                for (ContentInsertDTO contentDTO : sectionDTO.getContents()) {
-                    contentDTO.setSectionId(sectionId);
-                    Long contentId = contentRepository.insertContent(contentDTO);
-
-                    Map<String, Object> contentMap = new LinkedHashMap<>();
-                    contentMap.put("contentId", contentId);
-                    contentMap.put("contentTitle", contentDTO.getContentTitle());
-                    contentMap.put("contentUrl", contentDTO.getContentUrl());
-                    contentMap.put("contentPlayTime", contentDTO.getTime());
-                    contentList.add(contentMap);
-                }
-                sectionMap.put("contents", contentList);
-                sectionList.add(sectionMap);
+                sectionList.add(sectionObj);
             }
-            result.put("sections", sectionList);
+            return new CreateCourseRequest(courseDto, sectionList);
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return result;
+    }
+
+    private SectionInsertDTO createSection(SectionInsertDTO sectionDTO) throws SQLException {
+        Section section = sectionDTO.toSection();
+        Long sectionId = sectionRepository.createSection(section);
+
+        if (sectionId == null) {
+            throw new SQLException("Failed to create Section");
+        }
+
+        List<ContentInsertDTO> contentList = new ArrayList<>();
+        for (ContentInsertDTO contentDTO : sectionDTO.getContents()) {
+            contentDTO.setSectionId(sectionId);
+
+            ContentInsertDTO contentObj = createContent(contentDTO);
+
+            contentList.add(contentObj);
+        }
+
+        SectionInsertDTO sectionObj =
+                new SectionInsertDTO(sectionId, sectionDTO.getSectionTitle(), contentList);
+
+        return sectionObj;
+    }
+
+    private ContentInsertDTO createContent(ContentInsertDTO contentDto) throws SQLException {
+        Content content = contentDto.toContent();
+        Long contentId = contentRepository.insertContent(content);
+
+        if (contentId == null) {
+            throw new SQLException("Failed to create Content");
+        }
+
+        return new ContentInsertDTO(contentId, contentDto.getContentTitle(),
+                contentDto.getContentUrl(), contentDto.getTime());
     }
 }

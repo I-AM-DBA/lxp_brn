@@ -1,4 +1,6 @@
-package com.lxp.model.DTO;
+package com.lxp.model.dto;
+
+import com.lxp.model.dao.Course;
 
 public class CourseInsertDTO {
     private String courseTitle;
@@ -10,6 +12,10 @@ public class CourseInsertDTO {
     public CourseInsertDTO(String courseTitle, String courseDescription) {
         this.courseTitle = courseTitle;
         this.courseDescription = courseDescription;
+    }
+
+    public static CourseInsertDTO from(Course course) {
+        return new CourseInsertDTO(course.getCourseTitle(), course.getCourseDescription());
     }
 
     public String getCourseTitle() {
@@ -26,6 +32,13 @@ public class CourseInsertDTO {
 
     public void setCourseDescription(String courseDescription) {
         this.courseDescription = courseDescription;
+    }
+    
+    public Course toCourse() {
+        Course course = new Course();
+        course.setCourseTitle(courseTitle);
+        course.setCourseDescription(courseDescription);
+        return course;
     }
 
     @Override

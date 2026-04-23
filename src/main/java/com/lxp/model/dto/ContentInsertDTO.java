@@ -1,5 +1,7 @@
-package com.lxp.model.DTO;
+package com.lxp.model.dto;
 
+
+import com.lxp.model.dao.Content;
 
 public class ContentInsertDTO {
     private Long sectionId;
@@ -15,6 +17,11 @@ public class ContentInsertDTO {
     }
 
     public ContentInsertDTO() {
+    }
+
+    public static ContentInsertDTO from(Long sectionId, String contentTitle, String contentUrl,
+            int time) {
+        return new ContentInsertDTO(sectionId, contentTitle, contentUrl, time);
     }
 
     public Long getSectionId() {
@@ -47,6 +54,15 @@ public class ContentInsertDTO {
 
     public void setTime(int time) {
         this.time = time;
+    }
+
+    public Content toContent() {
+        Content content = new Content();
+        content.setSectionId(sectionId);
+        content.setContentTitle(contentTitle);
+        content.setContentUrl(contentUrl);
+        content.setTime(time);
+        return content;
     }
 
     @Override

@@ -2,9 +2,9 @@ package com.lxp;
 
 import com.lxp.courses.controller.CreateCourseController;
 import com.lxp.model.CreateCourseRequest;
-import com.lxp.model.DTO.ContentInsertDTO;
-import com.lxp.model.DTO.CourseInsertDTO;
-import com.lxp.model.DTO.SectionInsertDTO;
+import com.lxp.model.dto.ContentInsertDTO;
+import com.lxp.model.dto.CourseInsertDTO;
+import com.lxp.model.dto.SectionInsertDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +71,7 @@ public class Main {
             sectionDTO.setContents(contents);
             sections.add(sectionDTO);
         }
-        
+
         CreateCourseRequest request = new CreateCourseRequest();
         request.setCourse(courseDTO);
         request.setSections(sections);

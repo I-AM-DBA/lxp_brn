@@ -1,7 +1,7 @@
 package com.lxp.model;
 
-import com.lxp.model.DTO.CourseInsertDTO;
-import com.lxp.model.DTO.SectionInsertDTO;
+import com.lxp.model.dto.CourseInsertDTO;
+import com.lxp.model.dto.SectionInsertDTO;
 import java.util.List;
 
 public class CreateCourseRequest {
