@@ -3,22 +3,22 @@ package com.lxp.model.dto;
 import com.lxp.model.dao.Section;
 import java.util.List;
 
-public class SectionInsertDTO {
+public class SectionDTO {
     private Long courseId;
     private String sectionTitle;
-    private List<ContentInsertDTO> contents;
+    private List<ContentDTO> contents;
 
-    public SectionInsertDTO(Long courseId, String sectionTitle, List<ContentInsertDTO> contents) {
+    public SectionDTO(Long courseId, String sectionTitle, List<ContentDTO> contents) {
         this.courseId = courseId;
         this.sectionTitle = sectionTitle;
         this.contents = contents;
     }
 
-    public SectionInsertDTO() {
+    public SectionDTO() {
     }
 
-    public static SectionInsertDTO from(Section section) {
-        SectionInsertDTO sectionInsertDTO = new SectionInsertDTO();
+    public static SectionDTO from(Section section) {
+        SectionDTO sectionInsertDTO = new SectionDTO();
         sectionInsertDTO.setCourseId(section.getCourseId());
         sectionInsertDTO.setSectionTitle(section.getSectionTitle());
         return sectionInsertDTO;
@@ -40,16 +40,16 @@ public class SectionInsertDTO {
         this.sectionTitle = sectionTitle;
     }
 
-    public List<ContentInsertDTO> getContents() {
+    public List<ContentDTO> getContents() {
         return contents;
     }
 
-    public void setContents(List<ContentInsertDTO> contents) {
+    public void setContents(List<ContentDTO> contents) {
         this.contents = contents;
     }
 
-    public void addContent(ContentInsertDTO contentInsertDTO) {
-        this.contents.add(contentInsertDTO);
+    public void addContent(ContentDTO contentDTO) {
+        this.contents.add(contentDTO);
     }
 
     public Section toSection() {

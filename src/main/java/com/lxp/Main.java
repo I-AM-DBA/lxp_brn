@@ -2,9 +2,9 @@ package com.lxp;
 
 import com.lxp.courses.controller.CreateCourseController;
 import com.lxp.model.CreateCourseRequest;
-import com.lxp.model.dto.ContentInsertDTO;
-import com.lxp.model.dto.CourseInsertDTO;
-import com.lxp.model.dto.SectionInsertDTO;
+import com.lxp.model.dto.ContentDTO;
+import com.lxp.model.dto.CourseDTO;
+import com.lxp.model.dto.SectionDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +33,11 @@ public class Main {
         System.out.print("강의 설명: ");
         String description = sc.nextLine();
 
-        CourseInsertDTO courseDTO = new CourseInsertDTO();
+        CourseDTO courseDTO = new CourseDTO();
         courseDTO.setCourseTitle(title);
         courseDTO.setCourseDescription(description);
 
-        List<SectionInsertDTO> sections = new ArrayList<>();
+        List<SectionDTO> sections = new ArrayList<>();
         while (true) {
             System.out.print("\n[섹션 추가] 섹션 제목을 입력하세요 (그만하려면 'q' 입력): ");
             String sectionTitle = sc.nextLine();
@@ -45,10 +45,10 @@ public class Main {
                 break;
             }
 
-            SectionInsertDTO sectionDTO = new SectionInsertDTO();
+            SectionDTO sectionDTO = new SectionDTO();
             sectionDTO.setSectionTitle(sectionTitle);
 
-            List<ContentInsertDTO> contents = new ArrayList<>();
+            List<ContentDTO> contents = new ArrayList<>();
             while (true) {
                 System.out.print("[컨텐츠 추가] 컨텐츠 제목 (그만하려면 'q' 입력): ");
                 String contentTitle = sc.nextLine();
@@ -61,7 +61,7 @@ public class Main {
                 System.out.print("재생 시간(초): ");
                 int time = Integer.parseInt(sc.nextLine());
 
-                ContentInsertDTO contentDTO = new ContentInsertDTO();
+                ContentDTO contentDTO = new ContentDTO();
                 contentDTO.setContentTitle(contentTitle);
                 contentDTO.setContentUrl(url);
                 contentDTO.setTime(time);

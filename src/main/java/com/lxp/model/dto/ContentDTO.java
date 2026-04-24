@@ -3,25 +3,25 @@ package com.lxp.model.dto;
 
 import com.lxp.model.dao.Content;
 
-public class ContentInsertDTO {
+public class ContentDTO {
     private Long sectionId;
     private String contentTitle;
     private String contentUrl;
     private int time;
 
-    public ContentInsertDTO(Long sectionId, String contentTitle, String contentUrl, int time) {
+    public ContentDTO(Long sectionId, String contentTitle, String contentUrl, int time) {
         this.sectionId = sectionId;
         this.contentTitle = contentTitle;
         this.contentUrl = contentUrl;
         this.time = time;
     }
 
-    public ContentInsertDTO() {
+    public ContentDTO() {
     }
 
-    public static ContentInsertDTO from(Long sectionId, String contentTitle, String contentUrl,
+    public static ContentDTO from(Long sectionId, String contentTitle, String contentUrl,
             int time) {
-        return new ContentInsertDTO(sectionId, contentTitle, contentUrl, time);
+        return new ContentDTO(sectionId, contentTitle, contentUrl, time);
     }
 
     public Long getSectionId() {

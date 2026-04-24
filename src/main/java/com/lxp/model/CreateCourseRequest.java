@@ -1,14 +1,14 @@
 package com.lxp.model;
 
-import com.lxp.model.dto.CourseInsertDTO;
-import com.lxp.model.dto.SectionInsertDTO;
+import com.lxp.model.dto.CourseDTO;
+import com.lxp.model.dto.SectionDTO;
 import java.util.List;
 
 public class CreateCourseRequest {
-    private CourseInsertDTO course;
-    private List<SectionInsertDTO> sections;
+    private CourseDTO course;
+    private List<SectionDTO> sections;
 
-    public CreateCourseRequest(CourseInsertDTO course, List<SectionInsertDTO> sections) {
+    public CreateCourseRequest(CourseDTO course, List<SectionDTO> sections) {
         this.course = course;
         this.sections = sections;
     }
@@ -16,19 +16,19 @@ public class CreateCourseRequest {
     public CreateCourseRequest() {
     }
 
-    public void setCourse(CourseInsertDTO course) {
+    public void setCourse(CourseDTO course) {
         this.course = course;
     }
 
-    public void setSections(List<SectionInsertDTO> sections) {
+    public void setSections(List<SectionDTO> sections) {
         this.sections = sections;
     }
 
-    public CourseInsertDTO getCourse() {
+    public CourseDTO getCourse() {
         return course;
     }
 
-    public List<SectionInsertDTO> getSections() {
+    public List<SectionDTO> getSections() {
         return sections;
     }
 
