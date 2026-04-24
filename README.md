@@ -6,6 +6,15 @@ LXP 사이트를 직접 구현해봄으로써, `Java` 및 `JDBC` 기반의 `CRUD
 깊이 이해하고, 이를
 통해 실제 `CRUD`를 구현할 수 있다.
 
+## DTO 구조 가이드
+
+### 강의 생성
+
+CreateCourseRequest
+|-- CourseInsertDTO
+|-- List<SectionInsertDTO>
+| ㄴ-- List<ContentInsertDTO>
+
 ## ERD
 
 ### 초안
